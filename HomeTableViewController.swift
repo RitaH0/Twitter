@@ -18,10 +18,11 @@ class HomeTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadTweet()
         //self - keep it this page, action - call loadTweet function
         myRefreshControl.addTarget(self, action: #selector(loadTweet), for: .valueChanged)
         tableView.refreshControl = myRefreshControl
+        tableView.rowHeight = UITableView.automaticDimension // make it auto
+        tableView.estimatedRowHeight = 150 // set an initial height
                 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -30,6 +31,12 @@ class HomeTableViewController: UITableViewController {
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        print("refresh auto")
+        self.loadTweet()
+    }
+
     //called first time and every time refresh
     @objc func loadTweet(){
         numOfTweet = 20
@@ -97,6 +104,12 @@ class HomeTableViewController: UITableViewController {
             cell.profileimageView?.layer.cornerRadius = (cell.profileimageView?.frame.height)!/2
         }
         
+        //call setFavorite based on the info in the array
+        cell.setFavorite(_isFavorited: tweetArray[indexPath.row]["favorited"] as! Bool)
+        //get from the array and set the tweetId accordingly
+        cell.tweetId = tweetArray[indexPath.row]["id"] as! Int
+        cell.setRetweeted(_isRetweeted: tweetArray[indexPath.row]["retweeted"] as! Bool)
+
         return cell
     }
     
